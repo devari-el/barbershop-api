@@ -1,3 +1,6 @@
+// =================================================================
+// ARQUIVO: server.js (ATUALIZADO PARA PRODUÇÃO)
+// =================================================================
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -22,8 +25,6 @@ const corsOptions = {
 // Primeiro, usamos o middleware cors com as opções.
 app.use(cors(corsOptions));
 
-// Segundo, garantimos que as requisições OPTIONS sejam tratadas.
-// Esta é uma camada extra de segurança para o erro de preflight.
 app.options('*', cors(corsOptions));
 
 app.use(express.json());
