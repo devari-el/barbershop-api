@@ -12,11 +12,8 @@ const { startNotificationService } = require('./services/notification.service');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors({
-  origin: '*', // Permite qualquer origem. Seguro, pois a proteção é feita por token.
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.options('*', cors()); 
+app.use(cors());
 
 app.use(express.json());
 
