@@ -12,23 +12,14 @@ const { startNotificationService } = require('./services/notification.service');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use((req, res, next) => {
-  // Permite que qualquer origem aceda à nossa API.
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  // Define os métodos HTTP permitidos.
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  // Define os cabeçalhos que o front-end pode enviar.
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  // Se a requisição for uma "sondagem" (OPTIONS), respondemos com OK imediatamente.
-  // Isto é crucial para o erro de "preflight" que estamos a ver.
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  
-  next();
-});
+const corsOptions = {
+  origin: "*", // Permite pedidos de qualquer origem.
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Métodos permitidos.
+  preflightContinue: false,
+  optionsSuccessStatus: 204 // Responde com '204 No Content' aos pedidos de sondagem.
+};
 
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // --- Rotas ---
