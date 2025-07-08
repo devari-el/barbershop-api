@@ -1,5 +1,5 @@
 const express = require('express');
-// const cors = require('cors'); // Não vamos mais usar a biblioteca
+const cors = require('cors'); // Vamos usar a biblioteca novamente
 require('dotenv').config();
 
 const db = require('./db');
@@ -12,24 +12,25 @@ const { startNotificationService } = require('./services/notification.service');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// --- Configuração do CORS Manual (A MUDANÇA ESTÁ AQUI) ---
-// Criamos o nosso próprio middleware para ter controlo total sobre os cabeçalhos.
-app.use((req, res, next) => {
-  // Permite que qualquer origem aceda à nossa API.
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  // Define os métodos HTTP permitidos.
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  // Define os cabeçalhos que o front-end pode enviar.
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  // Se a requisição for uma "sondagem" (OPTIONS), respondemos com OK (204 No Content) imediatamente.
-  // Isto é crucial para o erro de "preflight" que estamos a ver.
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-  
-  next(); // Passa para a próxima etapa (as nossas rotas)
-});
+// --- Configuração do CORS (Abordagem Híbrida Final) ---
+
+// 1. Definir as opções explícitas para a biblioteca cors.
+//    Especificamos exatamente de onde o pedido pode vir.
+const corsOptions = {
+  origin: 'https://barbershop-frontend-omega.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+// 2. Lidar com a "sondagem" (preflight) ANTES de qualquer outra coisa.
+//    Isto diz ao Express para usar as nossas opções de CORS para responder
+//    especificamente aos pedidos OPTIONS em todas as rotas.
+app.options('*', cors(corsOptions));
+
+// 3. Usar o middleware cors para todas as outras requisições (GET, POST, etc.).
+app.use(cors(corsOptions));
+
 
 app.use(express.json());
 
