@@ -12,6 +12,8 @@ const { startNotificationService } = require('./services/notification.service');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// --- Configuração do CORS (A MUDANÇA ESTÁ AQUI) ---
+// Abordagem final e mais explícita para garantir a compatibilidade.
 const allowedOrigins = ['https://barbershop-frontend-omega.vercel.app'];
 
 const corsOptions = {
