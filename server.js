@@ -12,19 +12,22 @@ const { startNotificationService } = require('./services/notification.service');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// --- CORS ---
 const corsOptions = {
-  origin: "*", // Permite pedidos de qualquer origem.
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Métodos permitidos.
+  origin: 'https://barbershop-frontend-omega.vercel.app', // origem permitida
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   preflightContinue: false,
-  optionsSuccessStatus: 204 // Responde com '204 No Content' aos pedidos de sondagem.
+  optionsSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // habilita CORS para requisições OPTIONS
+
 app.use(express.json());
 
 // --- Rotas ---
 app.get('/', (req, res) => {
-    res.status(200).json({ status: 'API is running and ready!' });
+  res.status(200).json({ status: 'API is running and ready!' });
 });
 app.use('/api/auth', authRoutes);
 app.use('/api/clients', clientRoutes);
