@@ -1,8 +1,5 @@
-// =================================================================
-// ARQUIVO: server.js (ATUALIZADO PARA PRODUÇÃO)
-// =================================================================
 const express = require('express');
-const cors = require('cors');
+// const cors = require('cors'); // Não vamos mais usar a biblioteca
 require('dotenv').config();
 
 const db = require('./db');
@@ -15,17 +12,24 @@ const { startNotificationService } = require('./services/notification.service');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const corsOptions = {
-  origin: "*", // Permite pedidos de qualquer origem.
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Métodos permitidos.
-  preflightContinue: false,
-  optionsSuccessStatus: 204 // Responde com '204 No Content' aos pedidos de sondagem.
-};
-
-// Primeiro, usamos o middleware cors com as opções.
-app.use(cors(corsOptions));
-
-app.options('*', cors(corsOptions));
+// --- Configuração do CORS Manual (A MUDANÇA ESTÁ AQUI) ---
+// Criamos o nosso próprio middleware para ter controlo total sobre os cabeçalhos.
+app.use((req, res, next) => {
+  // Permite que qualquer origem aceda à nossa API.
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Define os métodos HTTP permitidos.
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  // Define os cabeçalhos que o front-end pode enviar.
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  // Se a requisição for uma "sondagem" (OPTIONS), respondemos com OK (204 No Content) imediatamente.
+  // Isto é crucial para o erro de "preflight" que estamos a ver.
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  
+  next(); // Passa para a próxima etapa (as nossas rotas)
+});
 
 app.use(express.json());
 
