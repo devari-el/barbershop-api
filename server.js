@@ -12,30 +12,14 @@ const { startNotificationService } = require('./services/notification.service');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// --- Configuração do CORS (A MUDANÇA ESTÁ AQUI) ---
-// Lista de endereços que têm permissão para acessar a API
-const allowedOrigins = [
-  'https://barbershop-frontend-omega.vercel.app',
-  // Adicione aqui outros endereços se precisar, como o de desenvolvimento local
-  // 'http://127.0.0.1:5500' 
-];
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Permite requisições sem 'origin' (como do Postman ou apps mobile) ou da nossa lista
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Não permitido pelo CORS'));
-    }
-  }
-};
-
-app.use(cors(corsOptions)); // Usa as opções de CORS configuradas
+app.use(cors());
 
 app.use(express.json());
 
 // --- Rotas ---
+app.get('/', (req, res) => {
+    res.status(200).json({ status: 'API is running and ready!' });
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/services', serviceRoutes);
