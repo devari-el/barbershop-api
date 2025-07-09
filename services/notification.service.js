@@ -47,20 +47,23 @@ const startNotificationService = () => {
           timeZone: 'America/Sao_Paulo'
         });
         
-        // MUDANÇA: Voltando a usar 'body' para testar a sessão do Sandbox
         const messageBody = `Olá, ${app.client_name}! Lembrete do seu agendamento na ${app.barbershop_name} hoje às ${appointmentTime}.`;
 
         try {
-        await twilioClient.messages.create({
-          from: `whatsapp:${app.twilio_phone_number}`,
-          to: `whatsapp:${app.client_phone}`,
-          // SID do template padrão do Sandbox: "Your appointment is coming up on {{1}} at {{2}}"
-          contentSid: 'HX85b62575e6e4ff6129d7cdefef8f983e',
-          contentVariables: JSON.stringify({
-            1: appointmentDate, // Preenche a variável {{1}}
-            2: appointmentTime  // Preenche a variável {{2}}
-          })
-        });
+          const appointmentDate = new Date(app.appointment_time).toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+          const appointmentTime = new Date(app.appointment_time).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo'});
+
+          // Usa 'contentSid' e 'contentVariables' em vez de 'body'
+          await twilioClient.messages.create({
+            from: `whatsapp:${app.twilio_phone_number}`,
+            to: `whatsapp:${app.client_phone}`,
+            // SID do template padrão do Sandbox: "Your appointment is coming up on {{1}} at {{2}}"
+            contentSid: 'HX85b62575e6e4ff6129d7cdefef8f983e',
+            contentVariables: JSON.stringify({
+              1: appointmentDate, // Preenche a variável {{1}}
+              2: appointmentTime  // Preenche a variável {{2}}
+            })
+          });
 
           console.log(`Lembrete (texto livre) enviado com sucesso para ${app.client_name} (Agendamento ID: ${app.appointment_id})`);
 
