@@ -47,42 +47,56 @@ exports.login = async (req, res) => {
   }
 
   try {
-    // Procura a barbearia pelo email
     const result = await db.query('SELECT * FROM barbershops WHERE email = $1', [email]);
     const barbershop = result.rows[0];
 
-    if (!barbershop) {
-      return res.status(401).json({ message: 'Credenciais inválidas.' }); // Mensagem genérica por segurança
+    if (!barbershop || !barbershop.is_approved) {
+      return res.status(401).json({ message: 'Credenciais inválidas ou conta não aprovada.' });
     }
 
-    // Verifica se a conta foi aprovada pelo administrador
-    if (!barbershop.is_approved) {
-      return res.status(403).json({ message: 'Sua conta ainda está pendente de aprovação.' });
-    }
-
-    // Compara a senha fornecida com a senha criptografada no banco
     const isMatch = await bcrypt.compare(password, barbershop.password_hash);
     if (!isMatch) {
       return res.status(401).json({ message: 'Credenciais inválidas.' });
     }
 
-    // Se tudo estiver correto, gera um Token JWT
-    const payload = {
-      id: barbershop.id,
-      name: barbershop.name,
-    };
+    const payload = { id: barbershop.id, name: barbershop.name };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: '24h', // Token expira em 24 horas
+    res.cookie('authToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000 // 24 horas
     });
 
-    res.status(200).json({
-      message: 'Login bem-sucedido!',
-      token: token,
-    });
+    res.status(200).json({ message: 'Login bem-sucedido!' });
 
   } catch (err) {
     console.error('Erro no login:', err);
     res.status(500).json({ message: 'Erro interno do servidor.' });
   }
+};
+
+// Função para fazer logout
+exports.logout = (req, res) => {
+  res.cookie('authToken', '', {
+    httpOnly: true,
+    expires: new Date(0)
+  });
+  res.status(200).json({ message: 'Logout bem-sucedido!' });
+};
+
+// Função para obter os dados do usuário logado
+exports.getMe = async (req, res) => {
+    const barbershopId = req.barbershopId;
+    try {
+        const result = await db.query('SELECT id, name, email FROM barbershops WHERE id = $1', [barbershopId]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Usuário não encontrado.' });
+        }
+        res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error('Erro ao buscar dados do usuário:', err);
+        res.status(500).json({ message: 'Erro interno do servidor.' });
+    }
 };
