@@ -41,7 +41,11 @@ const startNotificationService = () => {
 
         const twilioClient = new Twilio(app.twilio_account_sid, app.twilio_auth_token);
         
-        const appointmentTime = new Date(app.appointment_time).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+        const appointmentTime = new Date(app.appointment_time).toLocaleTimeString('pt-BR', {
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'America/Sao_Paulo'
+        });
         
         // MUDANÇA: Voltando a usar 'body' para testar a sessão do Sandbox
         const messageBody = `Olá, ${app.client_name}! Lembrete do seu agendamento na ${app.barbershop_name} hoje às ${appointmentTime}.`;
