@@ -58,7 +58,7 @@ const startNotificationService = () => {
             from: `whatsapp:${app.twilio_phone_number}`,
             to: `whatsapp:${app.client_phone}`,
             // SID do template padrão do Sandbox: "Your appointment is coming up on {{1}} at {{2}}"
-            contentSid: 'HX85b62575e6e4ff6129d7cdefef8f983e',
+            contentSid: 'HXb5b62575e6e4ff6129ad7c8efe1f983e',
             contentVariables: JSON.stringify({
               1: appointmentDate, // Preenche a variável {{1}}
               2: appointmentTime  // Preenche a variável {{2}}
