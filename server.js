@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors'); // Vamos usar a biblioteca oficial
+const cors = require('cors');
 require('dotenv').config();
 
 const db = require('./db');
@@ -12,13 +12,13 @@ const { startNotificationService } = require('./services/notification.service');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// --- Configuração do CORS (Abordagem Robusta com a Biblioteca) ---
-// Define explicitamente qual site tem permissão para acessar a API.
+// --- Configuração do CORS (Abordagem Final e Corrigida) ---
+// Define explicitamente qual site (origem) tem permissão.
 const corsOptions = {
   origin: 'https://barbershop-frontend-omega.vercel.app',
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-  optionsSuccessStatus: 204 // Necessário para alguns navegadores legados
+  credentials: true, // Permite que o frontend envie o token de autorização.
+  optionsSuccessStatus: 204
 };
 
 // Usa o middleware cors com as nossas opções.
