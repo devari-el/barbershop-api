@@ -51,11 +51,16 @@ const startNotificationService = () => {
         const messageBody = `Olá, ${app.client_name}! Lembrete do seu agendamento na ${app.barbershop_name} hoje às ${appointmentTime}.`;
 
         try {
-          await twilioClient.messages.create({
-            from: `whatsapp:${app.twilio_phone_number}`,
-            to: `whatsapp:${app.client_phone}`,
-            body: messageBody
-          });
+        await twilioClient.messages.create({
+          from: `whatsapp:${app.twilio_phone_number}`,
+          to: `whatsapp:${app.client_phone}`,
+          // SID do template padrão do Sandbox: "Your appointment is coming up on {{1}} at {{2}}"
+          contentSid: 'HX85b62575e6e4ff6129d7cdefef8f983e',
+          contentVariables: JSON.stringify({
+            1: appointmentDate, // Preenche a variável {{1}}
+            2: appointmentTime  // Preenche a variável {{2}}
+          })
+        });
 
           console.log(`Lembrete (texto livre) enviado com sucesso para ${app.client_name} (Agendamento ID: ${app.appointment_id})`);
 
