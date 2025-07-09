@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3001;
 // --- Configuração do CORS (Abordagem Robusta com a Biblioteca) ---
 // Define explicitamente qual site tem permissão para acessar a API.
 const corsOptions = {
-  origin: 'https://barbershop-frontend-omega.vercel.app/',
+  origin: 'https://barbershop-frontend-omega.vercel.app',
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204 // Necessário para alguns navegadores legados
