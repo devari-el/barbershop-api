@@ -50,19 +50,24 @@ const startNotificationService = () => {
         const messageBody = `Olá, ${app.client_name}! Lembrete do seu agendamento na ${app.barbershop_name} hoje às ${appointmentTime}.`;
 
         try {
-          const appointmentDate = new Date(app.appointment_time).toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
-          const appointmentTime = new Date(app.appointment_time).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo'});
+          // Formata a data e a hora para a mensagem
+          const appointmentTime = new Date(app.appointment_time).toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'America/Sao_Paulo'
+          });
+          const appointmentDate = new Date(app.appointment_time).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'long'
+          });
+          // 1. Criamos a mensagem personalizada
+          const messageBody = `Olá, ${app.client_name}! Lembrete do seu agendamento na ${app.barbershop_name} no dia ${appointmentDate} às ${appointmentTime}. Até logo!`;
 
-          // Usa 'contentSid' e 'contentVariables' em vez de 'body'
+          // 2. E usamos a propriedade 'body' para enviá-la
           await twilioClient.messages.create({
             from: `whatsapp:${app.twilio_phone_number}`,
             to: `whatsapp:${app.client_phone}`,
-            // SID do template padrão do Sandbox: "Your appointment is coming up on {{1}} at {{2}}"
-            contentSid: 'HXb5b62575e6e4ff6129ad7c8efe1f983e',
-            contentVariables: JSON.stringify({
-              1: appointmentDate, // Preenche a variável {{1}}
-              2: appointmentTime  // Preenche a variável {{2}}
-            })
+            body: messageBody
           });
 
           console.log(`Lembrete (texto livre) enviado com sucesso para ${app.client_name} (Agendamento ID: ${app.appointment_id})`);
