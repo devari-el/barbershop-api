@@ -69,7 +69,7 @@ exports.getAppointments = async (req, res) => {
 
   // Se uma data for fornecida, filtra os agendamentos para aquele dia
   if (date) {
-    queryText += ' AND a.appointment_time::date = $2';
+    queryText += ' AND (a.appointment_time AT TIME ZONE \'America/Sao_Paulo\')::date = $2';
     queryParams.push(date);
   }
   
