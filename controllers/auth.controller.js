@@ -1,6 +1,12 @@
 const db = require('../db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+  path: '/', // Garante que o cookie é válido para todo o site
+};
 
 // Função para registrar uma nova barbearia
 exports.register = async (req, res) => {
@@ -63,10 +69,8 @@ exports.login = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
 
     res.cookie('authToken', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 24 * 60 * 60 * 1000 // 24 horas
+      ...cookieOptions,
+      maxAge: 24 * 60 * 60 * 1000, // 1 dia
     });
 
     res.status(200).json({ message: 'Login bem-sucedido!' });
@@ -80,8 +84,8 @@ exports.login = async (req, res) => {
 // Função para fazer logout
 exports.logout = (req, res) => {
   res.cookie('authToken', '', {
-    httpOnly: true,
-    expires: new Date(0)
+    ...cookieOptions,
+    expires: new Date(0),
   });
   res.status(200).json({ message: 'Logout bem-sucedido!' });
 };

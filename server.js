@@ -15,17 +15,23 @@ const PORT = process.env.PORT || 3001;
 
 // --- Configuração do CORS ---
 // Define explicitamente qual site (origem) tem permissão.
+const whitelist = [
+  'https://barbershop-frontend-omega.vercel.app', // Produção
+  'http://localhost:5500',                        // Desenvolvimento
+  'http://127.0.0.1:5500'                         // Outra opção de desenvolvimento
+];
+
 const corsOptions = {
   origin: [
-    'https://barbershop-frontend-omega.vercel.app', // URL de produção
-    'http://127.0.0.1:5500'                        // URL do Live Server para testes locais
+    'https://barbershop-frontend-omega.vercel.app', // Produção
+    'http://localhost:5500',                        // Desenvolvimento
+    'http://127.0.0.1:5500'                         // Outra opção de desenvolvimento
   ],
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, // Permite que o frontend envie o token de autorização.
-  optionsSuccessStatus: 204
+  credentials: true, // Essencial para cookies
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], // Adiciona OPTIONS
+  allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
 };
 
-// Usa o middleware cors com as nossas opções.
 app.use(cors(corsOptions));
 
 app.use(express.json());
