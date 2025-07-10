@@ -65,8 +65,9 @@ exports.login = async (req, res) => {
     res.cookie('authToken', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 24 * 60 * 60 * 1000 // 24 horas
+      // Em produção (HTTPS), usa 'None'. Em desenvolvimento (HTTP), usa 'Lax'.
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+      maxAge: 24 * 60 * 60 * 1000 // 1 dia
     });
 
     res.status(200).json({ message: 'Login bem-sucedido!' });
@@ -81,6 +82,8 @@ exports.login = async (req, res) => {
 exports.logout = (req, res) => {
   res.cookie('authToken', '', {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
     expires: new Date(0)
   });
   res.status(200).json({ message: 'Logout bem-sucedido!' });
