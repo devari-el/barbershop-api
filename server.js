@@ -14,12 +14,11 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // --- Configuração do CORS ---
+// Define explicitamente qual site (origem) tem permissão.
 const corsOptions = {
-  // MODIFICAÇÃO AQUI: Adicionado 'http://localhost:5500'
   origin: [
     'https://barbershop-frontend-omega.vercel.app', // URL de produção
-    'http://127.0.0.1:5500',                        // URL antiga para testes locais
-    'http://localhost:5500'                        // URL NOVA para testes locais
+    'http://127.0.0.1:5500'                        // URL do Live Server para testes locais
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Permite que o frontend envie o token de autorização.

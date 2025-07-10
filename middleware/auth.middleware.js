@@ -5,19 +5,15 @@ exports.verifyToken = (req, res, next) => {
   const token = req.cookies.authToken;
 
   if (!token) {
-    // Se não houver cookie, retorna 401 (Não Autorizado)
-    return res.status(401).json({ message: 'Acesso negado. Nenhum token fornecido.' });
+    return res.status(403).json({ message: 'Nenhum token fornecido. Acesso negado.' });
   }
 
   try {
-    // Tenta verificar o token
+    // Verifica o token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // Se for válido, adiciona o ID do usuário à requisição
+    // Adiciona o ID do usuário à requisição para uso posterior
     req.barbershopId = decoded.id;
-    // E permite que a requisição continue
     next();
   } catch (err) {
-    // Se o token for inválido ou expirado, retorna 401
     return res.status(401).json({ message: 'Token inválido ou expirado.' });
-  }
-};
+  }};
