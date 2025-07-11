@@ -6,10 +6,6 @@ exports.createClient = async (req, res) => {
   const barbershopId = req.barbershopId;
   const { name, phone_number } = req.body;
 
-  if (!name || !phone_number) {
-    return res.status(400).json({ message: 'Nome e telefone são obrigatórios.' });
-  }
-
   try {
     const newClient = await db.query(
       'INSERT INTO clients (barbershop_id, name, phone_number) VALUES ($1, $2, $3) RETURNING *',
@@ -40,10 +36,6 @@ exports.updateClient = async (req, res) => {
   const barbershopId = req.barbershopId;
   const clientId = req.params.id; // Pega o ID do cliente da URL (ex: /api/clients/12)
   const { name, phone_number } = req.body;
-
-  if (!name || !phone_number) {
-    return res.status(400).json({ message: 'Nome e telefone são obrigatórios.' });
-  }
 
   try {
     const updatedClient = await db.query(
