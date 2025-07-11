@@ -5,10 +5,6 @@ exports.createAppointment = async (req, res) => {
   const barbershopId = req.barbershopId;
   const { client_id, service_id, appointment_time } = req.body;
 
-  if (!client_id || !service_id || !appointment_time) {
-    return res.status(400).json({ message: 'Cliente, serviço e horário são obrigatórios.' });
-  }
-
   try {
     // 1. Buscar a duração do serviço para calcular o horário final do agendamento
     const serviceResult = await db.query('SELECT duration_minutes FROM services WHERE id = $1 AND barbershop_id = $2', [service_id, barbershopId]);

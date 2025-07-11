@@ -5,15 +5,6 @@ exports.createService = async (req, res) => {
   const barbershopId = req.barbershopId;
   const { name, duration_minutes } = req.body;
 
-  if (!name || !duration_minutes) {
-    return res.status(400).json({ message: 'Nome e duração em minutos são obrigatórios.' });
-  }
-
-  // Valida se a duração é um número positivo
-  if (isNaN(duration_minutes) || Number(duration_minutes) <= 0) {
-    return res.status(400).json({ message: 'A duração deve ser um número positivo.' });
-  }
-
   try {
     const newService = await db.query(
       'INSERT INTO services (barbershop_id, name, duration_minutes) VALUES ($1, $2, $3) RETURNING *',
@@ -44,13 +35,6 @@ exports.updateService = async (req, res) => {
   const barbershopId = req.barbershopId;
   const serviceId = req.params.id;
   const { name, duration_minutes } = req.body;
-
-  if (!name || !duration_minutes) {
-    return res.status(400).json({ message: 'Nome e duração em minutos são obrigatórios.' });
-  }
-  if (isNaN(duration_minutes) || Number(duration_minutes) <= 0) {
-    return res.status(400).json({ message: 'A duração deve ser um número positivo.' });
-  }
 
   try {
     const updatedService = await db.query(
