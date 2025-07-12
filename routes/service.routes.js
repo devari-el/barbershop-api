@@ -13,7 +13,6 @@ router.use(verifyToken);
 router.post('/', validate(serviceSchema), serviceController.createService);
 router.get('/', serviceController.getServices);
 router.put('/:id', validate(serviceSchema), serviceController.updateService);
-
 router.delete('/:id', serviceController.deleteService);
 
 module.exports = router;

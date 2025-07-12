@@ -12,11 +12,6 @@ const cookieOptions = {
 exports.register = async (req, res) => {
   const { name, email, password } = req.body;
 
-  // Validação simples dos dados de entrada
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: 'Por favor, forneça nome, email e senha.' });
-  }
-
   try {
     // Verifica se o email já existe no banco
     const userExists = await db.query('SELECT * FROM barbershops WHERE email = $1', [email]);
@@ -47,10 +42,6 @@ exports.register = async (req, res) => {
 // Função para fazer login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Por favor, forneça email e senha.' });
-  }
 
   try {
     const result = await db.query('SELECT * FROM barbershops WHERE email = $1', [email]);
@@ -84,8 +75,8 @@ exports.login = async (req, res) => {
 // Função para fazer logout
 exports.logout = (req, res) => {
   res.cookie('authToken', '', {
-    ...cookieOptions,
-    expires: new Date(0),
+    httpOnly: true,
+    expires: new Date(0)
   });
   res.status(200).json({ message: 'Logout bem-sucedido!' });
 };

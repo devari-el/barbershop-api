@@ -5,8 +5,6 @@ exports.createAppointment = async (req, res) => {
   const barbershopId = req.barbershopId;
   const { client_id, service_id, appointment_time } = req.body;
 
-  // O bloco de validação manual foi removido daqui.
-
   try {
     const serviceResult = await db.query('SELECT duration_minutes FROM public."services" WHERE id = $1 AND barbershop_id = $2', [service_id, barbershopId]);
     if (serviceResult.rows.length === 0) {
