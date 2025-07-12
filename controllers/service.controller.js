@@ -7,7 +7,7 @@ exports.createService = async (req, res) => {
 
   try {
     const newService = await db.query(
-      'INSERT INTO services (barbershop_id, name, duration_minutes) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO public."services" (barbershop_id, name, duration_minutes) VALUES ($1, $2, $3) RETURNING *',
       [barbershopId, name, Number(duration_minutes)]
     );
     res.status(201).json(newService.rows[0]);
@@ -22,7 +22,7 @@ exports.getServices = async (req, res) => {
   const barbershopId = req.barbershopId;
 
   try {
-    const services = await db.query('SELECT * FROM services WHERE barbershop_id = $1 ORDER BY name ASC', [barbershopId]);
+    const services = await db.query('SELECT * FROM public."services" WHERE barbershop_id = $1 ORDER BY name ASC', [barbershopId]);
     res.status(200).json(services.rows);
   } catch (err) {
     console.error('Erro ao buscar serviços:', err);
@@ -38,7 +38,7 @@ exports.updateService = async (req, res) => {
 
   try {
     const updatedService = await db.query(
-      'UPDATE services SET name = $1, duration_minutes = $2 WHERE id = $3 AND barbershop_id = $4 RETURNING *',
+      'UPDATE public."services" SET name = $1, duration_minutes = $2 WHERE id = $3 AND barbershop_id = $4 RETURNING *',
       [name, Number(duration_minutes), serviceId, barbershopId]
     );
 
@@ -60,7 +60,7 @@ exports.deleteService = async (req, res) => {
 
   try {
     const result = await db.query(
-      'DELETE FROM services WHERE id = $1 AND barbershop_id = $2',
+      'DELETE FROM public."services" WHERE id = $1 AND barbershop_id = $2',
       [serviceId, barbershopId]
     );
 

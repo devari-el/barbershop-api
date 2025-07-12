@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-require('dotenv').config();
 
 const db = require('./db');
 const authRoutes = require('./routes/auth.routes');
@@ -14,26 +13,18 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // --- Configuração do CORS ---
-// Define explicitamente qual site (origem) tem permissão.
-const whitelist = [
-  'https://barbershop-frontend-omega.vercel.app', // Produção
-  'http://localhost:5500',                        // Desenvolvimento
-  'http://127.0.0.1:5500'                         // Outra opção de desenvolvimento
-];
-
 const corsOptions = {
   origin: [
-    'https://barbershop-frontend-omega.vercel.app', // Produção
-    'http://localhost:5500',                        // Desenvolvimento
-    'http://127.0.0.1:5500'                         // Outra opção de desenvolvimento
+    'https://barbershop-frontend-omega.vercel.app',
+    'http://localhost:5500',
+    'http://127.0.0.1:5500'
   ],
-  credentials: true, // Essencial para cookies
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], // Adiciona OPTIONS
-  allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
 app.use(cookieParser());
 
@@ -47,7 +38,14 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/appointments', appointmentRoutes);
 
 // --- Iniciar o Servidor e Serviços ---
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-  startNotificationService();
-});
+// Apenas inicia o servidor e os serviços se não estiver em ambiente de teste
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+    // A linha abaixo foi movida para dentro do 'if'
+    startNotificationService();
+  });
+}
+
+// Exporta o app para ser usado nos testes
+module.exports = app;

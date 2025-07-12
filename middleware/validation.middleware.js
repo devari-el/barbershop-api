@@ -21,12 +21,13 @@ const validate = (schema) => (req, res, next) => {
       // Erro de validação do cliente (Bad Request).
       return res.status(400).json({
         message: 'Erro de validação nos dados de entrada.',
-        errors: error.issues,
+        
+        errors: error.errors,
+
       });
     }
     // Erro inesperado no servidor.
     res.status(500).json({ message: 'Erro interno no servidor.' });
   }
 };
-
 module.exports = validate;
