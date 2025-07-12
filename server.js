@@ -1,12 +1,9 @@
 const express = require('express');
-const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const db = require('./db');
-// 1. Deve ter a importação do roteador principal
 const mainRouter = require('./routes/index'); 
 const { startNotificationService } = require('./services/notification.service');
-// 2. E também a importação do nosso novo handler de erro
 const errorHandler = require('./middleware/error.middleware'); 
 
 const app = express();
@@ -41,7 +38,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions)); // Apague esta linha
 app.use(express.json());
 app.use(cookieParser());
 
@@ -49,11 +46,9 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
     res.status(200).json({ status: 'API is running and ready!' });
 });
-// 3. Deve usar o roteador principal
 app.use('/api', mainRouter);
 
 // --- Middleware de Tratamento de Erros ---
-// 4. E também o handler de erro no final
 app.use(errorHandler);
 
 // --- Iniciar o Servidor e Serviços ---
